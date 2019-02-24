@@ -1,0 +1,67 @@
+/* 
+// Original program: 
+int count = 0;
+struct Packet {
+  int new;
+};
+
+// Detect first packet of a new flow
+// Trigger: whatever is the definition of a flow
+void func(struct Packet p) {
+  if (count == 0) {
+    count = 1;
+    p.new = 1;
+  }
+}
+ */
+
+// Output the rename map:
+// stateless variable rename list: 
+
+// state_and_packet.pkt_0 = p.new
+
+// stateful variable rename list: 
+
+// state_and_packet.state_0 = count
+
+|StateAndPacket| program (|StateAndPacket| state_and_packet) {if (state_and_packet.state_0==0) {state_and_packet.state_0=1;state_and_packet.pkt_0=1;; }; return state_and_packet;
+}
+Aatishs-MacBook-Pro:sketch_programs aatishvarma$ ls
+avq.sk				dns_ttl_change.sk		hash_pipe_second_stage.sk	learn_filter.sk			red.sk				stfq.sk
+blue_decrease.sk		flowlets.sk			heavy_hitters.sk		many_ip_domans.sk		sampling.sk			superspreader.sk
+blue_increase.sk		flowlets_intuitive.sk		hula_forwarding.sk		marple_new_flow.sk		snap_heavy_hitter.sk		trTCK_sat_core.sk
+codel.sk			ftp_monitoring.sk		hula_probe.sk			marple_tcp_nmo.sk		spam-detection.sk		trTCM.sk
+conga.sk			hash_pipe_first_stage.sk	hull.sk				rcp.sk				stateful_fw.sk			trTCM_unsat_core.sk
+Aatishs-MacBook-Pro:sketch_programs aatishvarma$ vi marple_new_flow.sk 
+Aatishs-MacBook-Pro:sketch_programs aatishvarma$ vi marple_tcp_nmo.sk 
+Aatishs-MacBook-Pro:sketch_programs aatishvarma$ ../../domino-compiler/domino_to_chipmunk ../domino_programs/marple_tcp_nmo.c 
+/* 
+// Original program: 
+struct Packet {
+  int tcpseq;
+};
+
+int count = 0;
+int maxseq = 0;
+
+void func(struct Packet p) {
+  if (p.tcpseq < maxseq) {
+    count = count + 1;
+  } else {
+    maxseq = p.tcpseq;
+  }
+}
+ */
+
+// Output the rename map:
+// stateless variable rename list: 
+
+// state_and_packet.pkt_0 = p.tcpseq
+
+// stateful variable rename list: 
+
+// state_and_packet.state_0 = maxseq
+// state_and_packet.state_1 = count
+
+|StateAndPacket| program (|StateAndPacket| state_and_packet) {if (state_and_packet.pkt_0<state_and_packet.state_0) {state_and_packet.state_1=state_and_packet.state_1+1;; }else {state_and_packet.state_0=state_and_packet.pkt_0;; }; return state_and_packet;
+}
